@@ -1,1 +1,3 @@
-console.log("123");
+import { Game } from './game.js';
+
+import './../css/style.css';
