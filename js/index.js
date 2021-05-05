@@ -1,3 +1,6 @@
 import { Game } from './game.js';
 
-import './../css/style.css';
+let canvas = document.getElementById('game');
+let game = new Game({
+    canvas: canvas
+});
