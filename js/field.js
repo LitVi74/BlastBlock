@@ -7,9 +7,10 @@ export class Field {
         this.width = config.width;
         this.height = config.height;
         this.colors = config.colors;
+        this.minGroup = config.minGroup;
 
         this.cells = [];
-        for (let x = 0; x < this.height; x++ ) {
+        for (let x = 0; x < this.height ; x++ ) {
             this.cells[x] = [];
 
             for (let y = 0; y < this.width; y++ ) {
@@ -35,7 +36,7 @@ export class Field {
     }
 
     forCell(callback) {
-        for (let x = 0; x < this.height; x++) {
+        for (let x = 0; x < this.height ; x++) {
             for (let y = 0; y < this.width; y ++){
                 callback(new Position(x, y));
             }
@@ -49,7 +50,15 @@ export class Field {
 
     onClick(position) {
         let neightbors = this.getNeightdors(position);
-        console.log(neightbors);
+        
+        if(neightbors.length >= this.minGroup){
+            this.canvas.burn(neightbors, () =>{
+                neightbors.forEach(posit => {
+                    this.cells[posit.x][posit.y] = null;
+                })
+                this.canvas.move(this.cells);
+            });
+        }
     }
 
     getNeightdors(position) {
@@ -81,4 +90,5 @@ export class Field {
 
         return neightbors;
     }
+
 }

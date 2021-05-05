@@ -47,15 +47,15 @@ export class Canvas {
 
         for (let x = 0; x < this.rows; x++) {
             for (let y = 0; y < this.cols; y++) {
-                this.drawTile(field [y][x]);
+                this.drawTile(field[x][y].position, field[x][y].color);
             }
         }
     }
 
-    drawTile(tile) {// закрашиваем один тайл
+    drawTile(posit, color) {// закрашиваем один тайл
 
-        let coords = this.getCoordsByPosit(tile.position);
-        this.ctx.fillStyle = tile.color;
+        let coords = this.getCoordsByPosit(posit);
+        this.ctx.fillStyle = color;
         this.ctx.fillRect(coords.x, coords.y, this.tile.width, this.tile.height);
         this.ctx.fill();
 
@@ -80,6 +80,15 @@ export class Canvas {
         let y = event.clientY - this.canvasY;
         let position = this.getPositByCoords(new Position(x, y));
         this.publish('click', position);
+    }
+
+    burn(cells, callback) {
+        cells.forEach(cell => this.drawTile(cell, 'black'));
+        setTimeout(callback, 1000);
+    }
+
+    move(field) {
+        console.log('move', field);
     }
 
     subscribe(event, callback) {// связка событие <=> функция 
