@@ -12,20 +12,23 @@ export class Canvas {
         this.canvasX = canvasCoords.x;
         this.canvasY = canvasCoords.y;
 
+        this.canvas.addEventListener('click', (event) => this.onClick(event));
+
         this.tile = tile;
         this.width = 0;
         this.height = 0;
         this.cols = 0;
         this.rows = 0;
+
+        this.subscribers = {};
     }
 
-    draw(field) {
+    draw(field) { // закрвшиваем поле
 
         if (!field || !field.length || !field[0].length) {
             return;
         }
 
-        console.log('field', field)
         if (this.rows !== field.height) {
 
             this.height = field.length * this.tile.height;
@@ -49,26 +52,44 @@ export class Canvas {
         }
     }
 
-    drawTile(tile) {
+    drawTile(tile) {// закрашиваем один тайл
 
         let coords = this.getCoordsByPosit(tile.position);
         this.ctx.fillStyle = tile.color;
-        this.ctx.fillRect(coords.x1, coords.y1, this.tile.width, this.tile.height);
+        this.ctx.fillRect(coords.x, coords.y, this.tile.width, this.tile.height);
         this.ctx.fill();
 
         //--- Прорисовка для всех возможных вариантов ---
     }
 
-    getCoordsByPosit(posit) {
-        let x1 = posit.x * this.tile.width;
-        let y1 = posit.y * this.tile.height;
+    getCoordsByPosit(posit) {// координаты верхнего правого угла тайла
+        let x = posit.x * this.tile.width;
+        let y = posit.y * this.tile.height;
 
-        return {x1, y1};
+        return new Position(x, y);
     }
 
-    getBoundingClientRect(coords) {
+    getPositByCoords(coords) {
         let x = Math.floor(coords.x / this.tile.width);
         let y = Math.floor(coords.y / this.tile.height);
         return new Position(x, y);
+    }
+
+    onClick(event) {//передает позицию тайла при клике
+        let x = event.clientX - this.canvasX;
+        let y = event.clientY - this.canvasY;
+        let position = this.getPositByCoords(new Position(x, y));
+        this.publish('click', position);
+    }
+
+    subscribe(event, callback) {// связка событие <=> функция 
+        if (!this.subscribers[event]) this.subscribers[event] = [];
+
+        this.subscribers[event].push(callback);
+    }
+
+    publish(event, data) {
+        let subscribers = this.subscribers[event];
+        subscribers.forEach(callback => callback(data));
     }
 }

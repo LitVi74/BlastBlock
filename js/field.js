@@ -16,16 +16,16 @@ export class Field {
                 this.cells[x].push(null);
             }
         }
-        console.log(this.cells);
 
         this.canvas = new Canvas(config.canvas); 
+        this.canvas.subscribe('click', data => this.onClick(data) );
     }
 
-    fill() {
+    fill() {// отрисовка поля
         this.forCell(posit => {
             let cell = this.cells[posit.x][posit.y];
             if(!cell) {
-                let tile = new Tile(this.getColor());
+                let tile = new Tile(this.getRandomColor());
                 tile.position = posit;
                 this.cells[posit.x][posit.y] = tile;
             }
@@ -42,8 +42,43 @@ export class Field {
         }
     }
 
-    getColor(){
+    getRandomColor(){
         let index = Math.floor( Math.random() * this.colors.length );
         return this.colors[index];
+    }
+
+    onClick(position) {
+        let neightbors = this.getNeightdors(position);
+        console.log(neightbors);
+    }
+
+    getNeightdors(position) {
+        let tile = this.cells[position.x][position.y];
+        if (!tile) return;
+
+        let color = tile.color;
+        let neightbors = [];
+
+        let check = (position) => {
+            if( position.x < 0 || position.y < 0 || position.x > this.width - 1 || position.y > this.height - 1 )
+                return;
+
+            let selectTite = this.cells[position.x][position.y];
+
+            if ( !selectTite || selectTite.checked || selectTite.color !== color ) 
+                return;
+
+            neightbors.push(position);
+            selectTite.checked = true;
+
+            check(new Position(position.x - 1, position.y));
+            check(new Position(position.x + 1, position.y));
+            check(new Position(position.x, position.y - 1));
+            check(new Position(position.x, position.y + 1))
+        }
+
+        check(position);
+
+        return neightbors;
     }
 }
