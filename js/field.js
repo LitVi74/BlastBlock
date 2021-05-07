@@ -54,9 +54,9 @@ export class Field {
         if(neightbors.length >= this.minGroup){
             this.canvas.burn(neightbors, () =>{
                 neightbors.forEach(posit => {
-                    this.cells[posit.x][posit.y] = null;
+                    this.cells[posit.x][posit.y].color = 'black';
                 })
-                this.canvas.move(this.cells);
+                this.move();
             });
         }
     }
@@ -89,6 +89,47 @@ export class Field {
         check(position);
 
         return neightbors;
+    }
+
+    move() {
+
+        let cols = [];
+        this.forCell(point => {
+            if (!cols[point.x]) cols[point.x] = [];
+            cols[point.x][point.y] = this.cells[point.x][point.y];
+        })
+
+        for (let x = 0; x < this.height; x++) {
+            for (let y = 0; y < this.width; y++){
+
+            }
+        }
+
+        cols.forEach((col, x) => {
+            col.forEach((cell, y) =>{
+                cell.from = cell.position;
+
+                if (cell.color == 'black') {
+                    if (y !== 0) {
+                        col.unshift(col.splice(y, 1)[0]); 
+                    }
+                }
+            })
+
+            for (let i = 0; i < this.height; i++) {
+                col[i].position = new Position(x, i);
+            }
+        })
+
+        cols.forEach((col, x) => {
+            col.forEach((cell, y) => {                
+                this.cells[x][y] = cell;
+            })
+        })
+
+        console.log(this.cells);
+
+        this.canvas.move(this.cells, () => this.canvas.fill())
     }
 
 }

@@ -24,7 +24,6 @@ export class Canvas {
     }
 
     draw(field) { // закрвшиваем поле
-
         if (!field || !field.length || !field[0].length) {
             return;
         }
@@ -53,13 +52,17 @@ export class Canvas {
     }
 
     drawTile(posit, color) {// закрашиваем один тайл
-
         let coords = this.getCoordsByPosit(posit);
         this.ctx.fillStyle = color;
         this.ctx.fillRect(coords.x, coords.y, this.tile.width, this.tile.height);
         this.ctx.fill();
 
         //--- Прорисовка для всех возможных вариантов ---
+    }
+
+    clearTile(posit) {
+        let coord = this.getCoordsByPosit(posit);
+        this.ctx.clearRect(coord.x, coord.y, this.tile.width, this.tile.height);
     }
 
     getCoordsByPosit(posit) {// координаты верхнего правого угла тайла
@@ -87,8 +90,28 @@ export class Canvas {
         setTimeout(callback, 1000);
     }
 
-    move(field) {
-        console.log('move', field);
+    move(field, callback) {
+        let movingSet = [];
+        field.forEach((row, x) => {
+            row.forEach((tile, y) => {
+                if (!tile || !tile.from) return;
+                if ( tile.from.x !== x || tile.from.y !== y ) {
+                    movingSet.push(tile);
+                }
+            })
+        })
+
+        setTimeout(() => {
+            console.log('move')
+            movingSet.forEach(tile => {
+                if (tile.color == 'black'){
+                    this.clearTile(tile.from);
+                }
+                this.drawTile(tile.position, tile.color);
+                console.log('draw', tile);
+                
+            })
+        }, 1000)
     }
 
     subscribe(event, callback) {// связка событие <=> функция 
