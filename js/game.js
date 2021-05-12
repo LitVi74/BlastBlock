@@ -1,21 +1,38 @@
 import { Field } from './field.js';
-import { defaultSetting } from './default.js'
+import { defaultSetting } from './default.js';
+import { Canvas } from './canvas.js';
+
 
 export class Game {
     constructor(config){
-        this.default = defaultSetting;
 
-        // Создаем поле
-        this.field = new Field({
-            width: config.width || this.default.width,
-            height: config.height || this.default.height,
+        this.default = defaultSetting;
+        
+        let params = {
+            type: Phaser.CANVAS,
+            width: config.cols || this.default.cols * this.default.tile.width,
+            height: config.rows || this.default.rows * this.default.tile.height,
+            backgroundColor: '#2d2d2d',
+            parent: 'background',
+            scene: {
+                create: this.create,
+            },
+            // Создаем поле
+            
+        };
+        
+        this.game = new Phaser.Game(params);
+
+        this.game.field_ = new Field({
+            cols: config.cols || this.default.cols,
+            rows: config.rows || this.default.rows,
             colors: config.colors || this.default.colors,
             minGroup: config.minGroup || this.default.minGroup,
-            canvas: config.canvas
+            canvas: this.game
         });
+    }
 
-        // Заполняем поле тайлами случайного цвета
-        this.field.fill();
-        
+    create () {
+        this.game.field_.fill(this);
     }
 }
