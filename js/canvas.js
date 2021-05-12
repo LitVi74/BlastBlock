@@ -1,61 +1,51 @@
 import { Position } from "./position.js";
 
 export class Canvas{
-    constructor (canvas, tile = { width: 60, height: 60 }) {
 
-        this.canvas = canvas;
-        
-        this.tile = tile;
-        this.width = 0;
-        this.height = 0;
-        this.cols = 0;
-        this.rows = 0;
-
-        this.subscribers = {};
+    create () {
+        this.cols_ = 0;
+        this.rows_ = 0;
+        let cells_ = this.game.field_.fill();
+        this.draw_(cells_);
     }
-    
-    draw(field, obj) { // закрвшиваем поле
+
+    draw_(field) { // закрвшиваем поле
         if (!field || !field.length || !field[0].length) {
             return;
         }
 
-        if (this.rows !== field.length) {
+        if (this.rows_ !== field.length) {
 
-            this.height = field.length * this.tile.height;
-            this.canvas.height = `${this.height}`;
-            this.rows = field.length;
+            this.rows_ = field.length;
         }
 
-        if (this.cols !== field[0].length) {
+        if (this.cols_ !== field[0].length) {
 
-            this.width = field[0].length * this.tile.width;
-            this.canvas.width = `${this.width}`;
-            this.cols = field[0].length;
+            this.cols_ = field[0].length;
         }
 
+        let graphics = this.add.graphics();
 
-        for (let x = 0; x < this.rows; x++) {
-            for (let y = 0; y < this.cols; y++) {
-                this.drawTile(field[x][y].position, field[x][y].color, obj);
+        for (let x = 0; x < this.rows_; x++) {
+            for (let y = 0; y < this.cols_; y++) {
+                this.drawTile_(field[x][y].position, field[x][y].color, graphics);
             }
         }
     }
 
-    /* !!!!! Подумать как избежать переноса obj !!!!! */
-    
-    drawTile(posit, color, obj) {// закрашиваем один тайл
-        let coords = this.getCoordsByPosit(posit);
-        let graphics = obj.add.graphics();
+    drawTile_(posit, color, graphics) {// закрашиваем один тайл
+        let coords = this.getCoordsByPosit_(posit);
         graphics.fillStyle(color);
-        graphics.fillRect(coords.x, coords.y, this.tile.width, this.tile.height);
+        graphics.fillRoundedRect(coords.x + 1, coords.y - 1, this.game.field_.tile.width - 1, this.game.field_.tile.height - 1, 7);
 
         //--- Прорисовка для всех возможных вариантов ---
     }
 
-    getCoordsByPosit(posit) {// координаты верхнего правого угла тайла
-        let x = posit.x * this.tile.width;
-        let y = posit.y * this.tile.height;
+    getCoordsByPosit_(posit) {// координаты верхнего правого угла тайла
+        let x = posit.x * this.game.field_.tile.width;
+        let y = posit.y * this.game.field_.tile.height;
 
         return new Position(x, y);
     }
+
 }

@@ -14,25 +14,18 @@ export class Game {
             height: config.rows || this.default.rows * this.default.tile.height,
             backgroundColor: '#2d2d2d',
             parent: 'background',
-            scene: {
-                create: this.create,
-            },
-            // Создаем поле
-            
+            scene: Canvas
         };
         
         this.game = new Phaser.Game(params);
 
+        // Создаем поле
         this.game.field_ = new Field({
             cols: config.cols || this.default.cols,
             rows: config.rows || this.default.rows,
             colors: config.colors || this.default.colors,
             minGroup: config.minGroup || this.default.minGroup,
-            canvas: this.game
+            tile: config.tile || this.default.tile
         });
-    }
-
-    create () {
-        this.game.field_.fill(this);
     }
 }

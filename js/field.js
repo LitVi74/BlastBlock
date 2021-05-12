@@ -8,6 +8,7 @@ export class Field {
         this.rows = config.rows;
         this.colors = config.colors;
         this.minGroup = config.minGroup;
+        this.tile = config.tile;
 
         this.cells = [];
         for (let x = 0; x < this.rows ; x++ ) {
@@ -17,11 +18,9 @@ export class Field {
                 this.cells[x].push(null);
             }
         }
-
-        this.canvas = new Canvas(config.canvas);
     }
 
-    fill(obj) {// отрисовка поля
+    fill() {// отрисовка поля
         this.forCell(posit => {
             let cell = this.cells[posit.x][posit.y];
             if(!cell) {
@@ -31,7 +30,7 @@ export class Field {
             }
         })
 
-        this.canvas.draw(this.cells, obj);
+        return this.cells;
     }
 
     forCell(callback) {
