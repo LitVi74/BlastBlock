@@ -1,25 +1,22 @@
 import { Tile } from './tile.js'; 
 import { Position } from './position.js';
-import { Canvas } from './canvas.js';
 
 export class Field {
     constructor (config) { //создание поля 
-        this.width = config.width;
-        this.height = config.height;
+        this.cols = config.cols;
+        this.rows = config.rows;
         this.colors = config.colors;
         this.minGroup = config.minGroup;
+        this.tile = config.tile;
 
         this.cells = [];
-        for (let x = 0; x < this.height ; x++ ) {
+        for (let x = 0; x < this.rows ; x++ ) {
             this.cells[x] = [];
 
-            for (let y = 0; y < this.width; y++ ) {
+            for (let y = 0; y < this.cols; y++ ) {
                 this.cells[x].push(null);
             }
         }
-
-        this.canvas = new Canvas(config.canvas); 
-        this.canvas.subscribe('click', data => this.onClick(data) );
     }
 
     fill() {// отрисовка поля
@@ -32,12 +29,12 @@ export class Field {
             }
         })
 
-        this.canvas.draw(this.cells);
+        return this.cells;
     }
 
     forCell(callback) {
-        for (let x = 0; x < this.height ; x++) {
-            for (let y = 0; y < this.width; y ++){
+        for (let x = 0; x < this.rows ; x++) {
+            for (let y = 0; y < this.cols; y ++){
                 callback(new Position(x, y));
             }
         }
@@ -50,42 +47,28 @@ export class Field {
 
     onClick(position) {
         let neightbors = this.getNeightdors(position);
-        
-        if(neightbors.length >= this.minGroup){
-            this.canvas.burn(neightbors, () =>{
-                neightbors.forEach(posit => {
-                    this.cells[posit.x][posit.y].color = 'black';
-                })
-                this.move();
-            });
-        }
+        if (neightbors.length < this.minGroup) return;
+        return neightbors;
     }
 
     getNeightdors(position) {
         let tile = this.cells[position.x][position.y];
         if (!tile) return;
-
         let color = tile.color;
         let neightbors = [];
-
         let check = (position) => {
-            if( position.x < 0 || position.y < 0 || position.x > this.width - 1 || position.y > this.height - 1 )
+            if( position.x < 0 || position.y < 0 || position.x > this.cols - 1 || position.y > this.rows - 1 )
                 return;
-
             let selectTite = this.cells[position.x][position.y];
-
             if ( !selectTite || selectTite.checked || selectTite.color !== color ) 
                 return;
-
             neightbors.push(position);
             selectTite.checked = true;
-
             check(new Position(position.x - 1, position.y));
             check(new Position(position.x + 1, position.y));
             check(new Position(position.x, position.y - 1));
             check(new Position(position.x, position.y + 1))
         }
-
         check(position);
 
         return neightbors;
@@ -99,25 +82,19 @@ export class Field {
             cols[point.x][point.y] = this.cells[point.x][point.y];
         })
 
-        for (let x = 0; x < this.height; x++) {
-            for (let y = 0; y < this.width; y++){
-
-            }
-        }
-
         cols.forEach((col, x) => {
             col.forEach((cell, y) =>{
-                cell.from = cell.position;
-
-                if (cell.color == 'black') {
+                if (cell == null) {
                     if (y !== 0) {
                         col.unshift(col.splice(y, 1)[0]); 
                     }
+                }else{
+                    cell.from = cell.position;
                 }
             })
 
-            for (let i = 0; i < this.height; i++) {
-                col[i].position = new Position(x, i);
+            for (let i = 0; i < this.rows; i++) {
+                if (col[i] != null) col[i].position = new Position(x, i);
             }
         })
 
@@ -127,9 +104,8 @@ export class Field {
             })
         })
 
-        console.log(this.cells);
+        return this.cells;
 
-        this.canvas.move(this.cells, () => this.canvas.fill())
+        //this.canvas.move(this.cells, () => this.canvas.fill())
     }
-
 }

@@ -1,96 +1,117 @@
 import { Position } from "./position.js";
-export { Tile } from "./tile.js";
 
-export class Canvas {
-    constructor (canvas, tile = { width: 60, height: 60 }) {
+export class Canvas{
 
-        this.canvas = canvas;
-        this.ctx = this.canvas.getContext('2d');
+    create () {
+        this.cols_ = 0;
+        this.rows_ = 0;
+        this.graphics_ = this.add.graphics();
 
-        let canvasCoords = this.canvas.getBoundingClientRect();
-
-        this.canvasX = canvasCoords.x;
-        this.canvasY = canvasCoords.y;
-
-        this.canvas.addEventListener('click', (event) => this.onClick(event));
-
-        this.tile = tile;
-        this.width = 0;
-        this.height = 0;
-        this.cols = 0;
-        this.rows = 0;
-
-        this.subscribers = {};
+        let cells_ = this.game.field_.fill();
+        this.draw_(cells_);
+        
+        this.input.on('pointerdown', this.onClick_, this);
     }
 
-    draw(field) { // закрвшиваем поле
+    draw_(field) { // закрвшиваем поле
         if (!field || !field.length || !field[0].length) {
             return;
         }
 
-        if (this.rows !== field.height) {
+        if (this.rows_ !== field.length) {
 
-            this.height = field.length * this.tile.height;
-            this.canvas.height = `${this.height}`;
-            this.rows = field.length;
+            this.rows_ = field.length;
         }
 
-        if (this.cols !== field[0].length) {
+        if (this.cols_ !== field[0].length) {
 
-            this.width = field[0].length * this.tile.width;
-            this.canvas.width = `${this.width}`;
-            this.cols = field[0].length;
+            this.cols_ = field[0].length;
         }
 
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        
 
-        for (let x = 0; x < this.rows; x++) {
-            for (let y = 0; y < this.cols; y++) {
-                this.drawTile(field[x][y].position, field[x][y].color);
+        for (let x = 0; x < this.rows_; x++) {
+            for (let y = 0; y < this.cols_; y++) {
+                this.drawTile_(field[x][y]);
             }
         }
     }
 
-    drawTile(posit, color) {// закрашиваем один тайл
-        let coords = this.getCoordsByPosit(posit);
-        this.ctx.fillStyle = color;
-        this.ctx.fillRect(coords.x, coords.y, this.tile.width, this.tile.height);
-        this.ctx.fill();
+    drawTile_(field) {// закрашиваем один тайл
+        if (!field) return;
+        let coords = this.getCoordsByPosit_(field.position);
+        this.graphics_.fillStyle(field.color);
+        this.graphics_.fillRoundedRect(coords.x + 1, coords.y + 1, this.game.field_.tile.width - 2, this.game.field_.tile.height - 2, 7);
 
         //--- Прорисовка для всех возможных вариантов ---
     }
 
-    clearTile(posit) {
-        let coord = this.getCoordsByPosit(posit);
-        this.ctx.clearRect(coord.x, coord.y, this.tile.width, this.tile.height);
-    }
-
-    getCoordsByPosit(posit) {// координаты верхнего правого угла тайла
-        let x = posit.x * this.tile.width;
-        let y = posit.y * this.tile.height;
-
+    getCoordsByPosit_(posit) {// координаты верхнего правого угла тайла
+        let x = posit.x * this.game.field_.tile.width;
+        let y = posit.y * this.game.field_.tile.height;
         return new Position(x, y);
     }
 
-    getPositByCoords(coords) {
-        let x = Math.floor(coords.x / this.tile.width);
-        let y = Math.floor(coords.y / this.tile.height);
+    getPositByCoords_(coords) {
+        let x = Math.floor(coords.x / this.game.field_.tile.width);
+        let y = Math.floor(coords.y / this.game.field_.tile.height);
         return new Position(x, y);
     }
 
-    onClick(event) {//передает позицию тайла при клике
-        let x = event.clientX - this.canvasX;
-        let y = event.clientY - this.canvasY;
-        let position = this.getPositByCoords(new Position(x, y));
-        this.publish('click', position);
+    onClick_(context) {//передает позицию тайла при клике
+        let position = this.getPositByCoords_(new Position(context.worldX, context.worldY));
+        let neightbors = this.game.field_.onClick(position);
+        if (neightbors) {
+            this.burn_(neightbors, () => {
+                neightbors.forEach((posit) => {
+                    this.game.field_.cells[posit.x][posit.y] = null;
+                })  
+                this.graphics_.clear();
+                this.draw_(this.game.field_.cells); 
+                let cells = this.game.field_.move();
+                this.move_(cells);
+
+            });         
+        }
     }
 
-    burn(cells, callback) {
-        cells.forEach(cell => this.drawTile(cell, 'black'));
-        setTimeout(callback, 1000);
+    burn_(posits, callback) {
+        let width = this.game.field_.tile.width;
+        let height = this.game.field_.tile.height;
+        let graphics = this.graphics_;
+        let canvas = this;
+
+        this.tweens.addCounter({
+            from: 1,
+            to: Math.min(width, height) / 2 - 4,
+            duration: 900,
+            onUpdate: function (tween) {
+                let t = tween.getValue();
+
+                graphics.clear();
+                canvas.draw_(canvas.game.field_.cells);
+                posits.forEach((posit) => {
+                    let coords = canvas.getCoordsByPosit_(posit);
+
+                    graphics.fillStyle(0x2d2d2d);
+                    graphics.fillRoundedRect(coords.x + 1, coords.y + 1, width - 2, height - 2, 7);
+
+                    graphics.fillStyle(canvas.game.field_.cells[posit.x][posit.y].color);
+                    graphics.fillRoundedRect(
+                        coords.x + t, 
+                        coords.y + t, 
+                        width - t * 2,
+                        height - t * 2, 
+                        7
+                    );
+                })
+            }
+        })
+
+        setTimeout(callback, 1000)
     }
 
-    move(field, callback) {
+    move_(field) {
         let movingSet = [];
         field.forEach((row, x) => {
             row.forEach((tile, y) => {
@@ -101,27 +122,8 @@ export class Canvas {
             })
         })
 
-        setTimeout(() => {
-            console.log('move')
-            movingSet.forEach(tile => {
-                if (tile.color == 'black'){
-                    this.clearTile(tile.from);
-                }
-                this.drawTile(tile.position, tile.color);
-                console.log('draw', tile);
-                
-            })
-        }, 1000)
+        this.graphics_.clear();
+        this.draw_(this.game.field_.cells);
     }
 
-    subscribe(event, callback) {// связка событие <=> функция 
-        if (!this.subscribers[event]) this.subscribers[event] = [];
-
-        this.subscribers[event].push(callback);
-    }
-
-    publish(event, data) {
-        let subscribers = this.subscribers[event];
-        subscribers.forEach(callback => callback(data));
-    }
 }
