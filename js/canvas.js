@@ -6,6 +6,7 @@ export class Canvas{
         this.cols_ = 0;
         this.rows_ = 0;
         this.graphics_ = this.add.graphics();
+        this.isActive = false;
 
         let cells_ = this.game.field_.fill();
         this.draw_(cells_);
@@ -59,6 +60,9 @@ export class Canvas{
     }
 
     onClick_(context) {//передает позицию тайла при клике
+        if (this.isActive) return;
+        this.isActive = true;
+
         let position = this.getPositByCoords_(new Position(context.worldX, context.worldY));
         let neightbors = this.game.field_.onClick(position);
         if (neightbors) {
@@ -71,6 +75,7 @@ export class Canvas{
                 let cells = this.game.field_.move();
                 this.move_(cells);
 
+                this.isActive = false;
             });         
         }
     }
@@ -84,7 +89,7 @@ export class Canvas{
         this.tweens.addCounter({
             from: 1,
             to: Math.min(width, height) / 2 - 4,
-            duration: 900,
+            duration: 500,
             onUpdate: function (tween) {
                 let t = tween.getValue();
 
@@ -94,7 +99,7 @@ export class Canvas{
                     let coords = canvas.getCoordsByPosit_(posit);
 
                     graphics.fillStyle(0x2d2d2d);
-                    graphics.fillRoundedRect(coords.x + 1, coords.y + 1, width - 2, height - 2, 7);
+                    graphics.fillRoundedRect(coords.x, coords.y, width, height, 7);
 
                     graphics.fillStyle(canvas.game.field_.cells[posit.x][posit.y].color);
                     graphics.fillRoundedRect(
@@ -106,9 +111,9 @@ export class Canvas{
                     );
                 })
             }
-        })
+        });
 
-        setTimeout(callback, 1000)
+        setTimeout(callback, 600)
     }
 
     move_(field) {
@@ -119,11 +124,47 @@ export class Canvas{
                 if ( tile.from.x !== x || tile.from.y !== y ) {
                     movingSet.push(tile);
                 }
-            })
-        })
+            });
+        });
 
-        this.graphics_.clear();
-        this.draw_(this.game.field_.cells);
+        let width = this.game.field_.tile.width;
+        let height = this.game.field_.tile.height;
+        let graphics = this.graphics_;
+        let canvas = this;
+
+        this.tweens.addCounter({
+            from: 0,
+            to: 1,
+            duration: 500,
+            onUpdate: function (tween) {
+                let t = tween.getValue();
+
+                graphics.clear();
+                canvas.draw_(canvas.game.field_.cells);
+
+                movingSet.forEach((tile) => {
+                    let coords = canvas.getCoordsByPosit_(tile.position);
+                    let coordsFrom = canvas.getCoordsByPosit_(tile.from);
+
+                    graphics.fillStyle(0x2d2d2d);
+                    graphics.fillRoundedRect(coords.x, coords.y, width, height, 7);
+
+                    graphics.fillStyle(tile.color);
+                    graphics.fillRoundedRect(
+                        coordsFrom.x + 1, 
+                        (coords.y - coordsFrom.y) * t + coordsFrom.y + 1, 
+                        width - 2,
+                        height - 2, 
+                        7
+                    );
+                });
+
+                if(t == 1) {
+                    canvas.game.field_.createNewTile();
+                    canvas.draw_(canvas.game.field_.cells);
+                }
+            }
+        });
     }
 
 }

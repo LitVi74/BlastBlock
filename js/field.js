@@ -46,6 +46,7 @@ export class Field {
     }
 
     onClick(position) {
+
         let neightbors = this.getNeightdors(position);
         if (neightbors.length < this.minGroup) return;
         return neightbors;
@@ -77,9 +78,9 @@ export class Field {
     move() {
 
         let cols = [];
-        this.forCell(point => {
-            if (!cols[point.x]) cols[point.x] = [];
-            cols[point.x][point.y] = this.cells[point.x][point.y];
+        this.forCell(posit => {
+            if (!cols[posit.x]) cols[posit.x] = [];
+            cols[posit.x][posit.y] = this.cells[posit.x][posit.y];
         })
 
         cols.forEach((col, x) => {
@@ -105,7 +106,15 @@ export class Field {
         })
 
         return this.cells;
+    }
 
-        //this.canvas.move(this.cells, () => this.canvas.fill())
+    createNewTile(){
+        this.forCell(posit => {
+            if (this.cells[posit.x][posit.y] == null){
+                let tile = new Tile(this.getRandomColor());
+                tile.position = posit;
+                this.cells[posit.x][posit.y] = tile;
+            }
+        })
     }
 }
