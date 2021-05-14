@@ -43,6 +43,10 @@ export class Canvas{
         let coords = this.getCoordsByPosit_(field.position);
         this.graphics_.fillStyle(field.color);
         this.graphics_.fillRoundedRect(coords.x + 1, coords.y + 1, this.game.field_.tile.width - 2, this.game.field_.tile.height - 2, 7);
+        if(field.isBomb){
+            this.graphics_.lineStyle(2, 0xffffff);
+            this.graphics_.strokeRoundedRect(coords.x + 1, coords.y + 1, this.game.field_.tile.width - 2, this.game.field_.tile.height - 2, 7);
+        }
 
         //--- Прорисовка для всех возможных вариантов ---
     }
@@ -68,7 +72,9 @@ export class Canvas{
         if (neightbors) {
             this.burn_(neightbors, () => {
                 neightbors.forEach((posit) => {
-                    this.game.field_.cells[posit.x][posit.y] = null;
+                    if(!this.game.field_.cells[posit.x][posit.y].isBomb){
+                        this.game.field_.cells[posit.x][posit.y] = null;
+                    }
                 })  
                 this.graphics_.clear();
                 this.draw_(this.game.field_.cells); 
@@ -96,19 +102,21 @@ export class Canvas{
                 graphics.clear();
                 canvas.draw_(canvas.game.field_.cells);
                 posits.forEach((posit) => {
-                    let coords = canvas.getCoordsByPosit_(posit);
+                    if(!canvas.game.field_.cells[posit.x][posit.y].isBomb) {
+                        let coords = canvas.getCoordsByPosit_(posit);
 
-                    graphics.fillStyle(0x2d2d2d);
-                    graphics.fillRoundedRect(coords.x, coords.y, width, height, 7);
+                        graphics.fillStyle(0x2d2d2d);
+                        graphics.fillRoundedRect(coords.x, coords.y, width, height, 7);
 
-                    graphics.fillStyle(canvas.game.field_.cells[posit.x][posit.y].color);
-                    graphics.fillRoundedRect(
-                        coords.x + t, 
-                        coords.y + t, 
-                        width - t * 2,
-                        height - t * 2, 
-                        7
-                    );
+                        graphics.fillStyle(canvas.game.field_.cells[posit.x][posit.y].color);
+                        graphics.fillRoundedRect(
+                            coords.x + t, 
+                            coords.y + t, 
+                            width - t * 2,
+                            height - t * 2, 
+                            7
+                        );
+                    }
                 })
             }
         });
@@ -157,6 +165,16 @@ export class Canvas{
                         height - 2, 
                         7
                     );
+                    if(tile.isBomb){
+                        graphics.lineStyle(2, 0xffffff);
+                        graphics.strokeRoundedRect(
+                            coordsFrom.x + 1,
+                            (coords.y - coordsFrom.y) * t + coordsFrom.y + 1, 
+                            width - 2, 
+                            height - 2, 
+                            7
+                        );
+                    }
                 });
 
                 if(t == 1) {
@@ -166,5 +184,4 @@ export class Canvas{
             }
         });
     }
-
 }

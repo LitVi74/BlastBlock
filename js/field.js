@@ -55,6 +55,25 @@ export class Field {
     getNeightdors(position) {
         let tile = this.cells[position.x][position.y];
         if (!tile) return;
+
+        if(this.cells[position.x][position.y].isBomb){
+
+            let neightbors = [];
+            neightbors.push(position);
+            neightbors.push(new Position(position.x - 1, position.y));
+            neightbors.push(new Position(position.x, position.y - 1));
+            neightbors.push(new Position(position.x + 1, position.y));
+            neightbors.push(new Position(position.x, position.y + 1));
+            neightbors.push(new Position(position.x - 1, position.y - 1));
+            neightbors.push(new Position(position.x - 1, position.y + 1));
+            neightbors.push(new Position(position.x + 1, position.y - 1));
+            neightbors.push(new Position(position.x + 1, position.y + 1));
+
+            this.cells[position.x][position.y].isBomb = false;
+
+            return neightbors;
+        }
+
         let color = tile.color;
         let neightbors = [];
         let check = (position) => {
@@ -71,6 +90,10 @@ export class Field {
             check(new Position(position.x, position.y + 1))
         }
         check(position);
+
+        if (neightbors.length >= 6) {
+            this.cells[position.x][position.y].isBomb = true;
+        }
 
         return neightbors;
     }

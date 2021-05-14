@@ -9,6 +9,7 @@ class Tile {
         this.color = color;
         this.position = null;
         this.status = statuses.default;
+        this.isBomb = false;
     }
 }
 
