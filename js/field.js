@@ -59,6 +59,7 @@ export class Field {
         if(this.cells[position.x][position.y].isBomb){
 
             let neightbors = [];
+<<<<<<< Updated upstream
             neightbors.push(position);
             neightbors.push(new Position(position.x - 1, position.y));
             neightbors.push(new Position(position.x, position.y - 1));
@@ -68,6 +69,22 @@ export class Field {
             neightbors.push(new Position(position.x - 1, position.y + 1));
             neightbors.push(new Position(position.x + 1, position.y - 1));
             neightbors.push(new Position(position.x + 1, position.y + 1));
+=======
+            let check = (position) => {
+                if( position.x < 0 || position.y < 0 || position.x > this.cols - 1 || position.y > this.rows - 1 )
+                    return;
+                neightbors.push(position);
+            }
+            check(position);
+            check(new Position(position.x - 1, position.y));
+            check(new Position(position.x, position.y - 1));
+            check(new Position(position.x + 1, position.y));
+            check(new Position(position.x, position.y + 1));
+            check(new Position(position.x - 1, position.y - 1));
+            check(new Position(position.x - 1, position.y + 1));
+            check(new Position(position.x + 1, position.y - 1));
+            check(new Position(position.x + 1, position.y + 1));
+>>>>>>> Stashed changes
 
             this.cells[position.x][position.y].isBomb = false;
 
