@@ -1,4 +1,6 @@
 import { Game } from './game.js';
 
-let game = new Game({
-});
+window.onload = function() {
+    let game = new Game({
+    });
+};

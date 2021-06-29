@@ -9,6 +9,7 @@ export class Field {
         this.minGroup = config.minGroup;
         this.tile = config.tile;
 
+        this.pointCount = 0;
         this.cells = [];
         for (let x = 0; x < this.rows ; x++ ) {
             this.cells[x] = [];
@@ -49,6 +50,7 @@ export class Field {
 
         let neightbors = this.getNeightdors(position);
         if (neightbors.length < this.minGroup) return;
+        this.onPoints(neightbors.length);
         return neightbors;
     }
 
@@ -146,5 +148,12 @@ export class Field {
                 this.cells[posit.x][posit.y] = tile;
             }
         })
+    }
+
+    onPoints(count){
+        let canvas = document.getElementsByTagName("canvas");
+        canvas[0].dispatchEvent(new CustomEvent("point", {
+            detail: { count }
+        }));
     }
 }
