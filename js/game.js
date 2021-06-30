@@ -19,8 +19,8 @@ export class Game {
             type: Phaser.CANVAS,
             width: config.cols || this.default.cols * this.default.tile.width,
             height: config.rows || this.default.rows * this.default.tile.height,
-            backgroundColor: '#2d2d2d',
-            parent: 'phaser-example',
+            backgroundColor: '#0d233d00',
+            parent: 'content',
             canvas: document.getElementById('myGame'),
             scene: Canvas
         };
