@@ -105,7 +105,7 @@ export class Canvas{
                     if(!canvas.game.field_.cells[posit.x][posit.y].isBomb) {
                         let coords = canvas.getCoordsByPosit_(posit);
 
-                        graphics.fillStyle(0x2d2d2d);
+                        graphics.fillStyle(0x0d233d);
                         graphics.fillRoundedRect(coords.x, coords.y, width, height, 7);
 
                         graphics.fillStyle(canvas.game.field_.cells[posit.x][posit.y].color);
@@ -154,7 +154,7 @@ export class Canvas{
                     let coords = canvas.getCoordsByPosit_(tile.position);
                     let coordsFrom = canvas.getCoordsByPosit_(tile.from);
 
-                    graphics.fillStyle(0x2d2d2d);
+                    graphics.fillStyle(0x0d233d);
                     graphics.fillRoundedRect(coords.x, coords.y, width, height, 7);
 
                     graphics.fillStyle(tile.color);

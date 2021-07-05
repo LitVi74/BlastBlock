@@ -8,12 +8,44 @@
 	<script src="js/phaser.min.js"></script>
 </head>
 <body>
-	<div id="content">
-		<div class="progress-bar">
-			<div class="progress-indicator"></div>
-		</div>
-		<canvas id="myGame"></canvas>
-	</div> 	
+	<table class="content">
+		<tr>
+			<td></td>
+			<td class="progress">
+				<span>Прогресс</span>
+				<div class="progress-bar">
+					<div class="progress-indicator" data-bind="percent"></div>
+				</div>
+			</td>
+		</tr>
+		<tr class="container">
+			<td>
+				<div class="heading">
+					Ходов
+				</div>
+				<div class="info">
+					<div class="status">
+						<div class="status-step">
+							<span class="step" data-bind="steps"></span>
+						</div>
+						<div class="status-points">
+							<span>Необходимо</span>
+							<span data-bind="roundPoints"></span>
+						</div>
+						<div class="status-points">
+							<span>Набрано</span>
+							<span data-bind="points"></span>
+						</div>
+					</div>
+				</div>
+			</td>
+			<td class="field">
+				<div id="field-game">
+					<canvas id="myGame"></canvas>
+				</div>
+			</td>
+		</tr>
+	</table> 	
 	<script type="module" src="js/index.js"></script>
 </body>
 </html>

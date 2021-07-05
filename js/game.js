@@ -1,7 +1,7 @@
 import { Field } from './field.js';
 import { defaultSetting } from './default.js';
 import { Canvas } from './canvas.js';
-import { HTMLBinder } from './html-progress.js'
+import { HTMLBinder } from './html-binder.js'
 
 export class Game {
     constructor(config){
@@ -12,15 +12,20 @@ export class Game {
 
         this.default = defaultSetting;
 
-        new HTMLBinder(this, 'progress-indicator', 'percent');
+        new HTMLBinder(this, 'data-bind', [
+            'roundPoints', 'points', 'steps', 'percent'
+        ]);
+        this.points = 0;
+        this.roundPoints = 100;
+        this.steps = 15;
         this.percent = 0;
         
         let params = {
             type: Phaser.CANVAS,
             width: config.cols || this.default.cols * this.default.tile.width,
             height: config.rows || this.default.rows * this.default.tile.height,
-            backgroundColor: '#0d233d00',
-            parent: 'content',
+            backgroundColor: '#0d233d',
+            parent: 'field-game',
             canvas: document.getElementById('myGame'),
             scene: Canvas
         };
@@ -41,7 +46,6 @@ export class Game {
     }
 
     onPoints(event){
-        console.log(`${event.detail.count} tiles`)
         this.steps--;
 
         this.points += event.detail.count;
@@ -53,6 +57,15 @@ export class Game {
     }
 
     finish() {
-        console.log('finish')
+        let fieldGame = document.getElementById('field-game');
+        fieldGame.style.pointerEvents = 'none';
+        let div = '<div class="end">';
+        if (this._percent >= 100) {
+            div += '<span>Поздравляем <br> Вы победили</span>';
+        } else {
+            div += '<span>Упс <br> Вы проиграли :(</span>';
+        }
+        div += '</div>';
+        fieldGame.insertAdjacentHTML('afterend', div);
     }
 }
