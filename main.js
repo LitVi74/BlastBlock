@@ -11,8 +11,12 @@ cc.game.onStart = function(){
   cc.view.resizeWithBrowserSize(true);
 
   //load resources
-  // cc.LoaderScene.preload(Object.values(resources), function () {
-  //     cc.director.runScene(new Game());
-  // }, this);
+  cc.LoaderScene.preload(
+    Object.values(resources),
+    function () {
+      cc.director.runScene(new Game());
+    },
+    this
+  );
 };
 cc.game.run();
