@@ -1,4 +1,53 @@
-import { Tile } from './tile.js'; 
+const Field = cc.DrawNode.extend({
+	ctor: function (columnCount, rowCount, tileWidth, tileHeight) {
+		this._super();
+		this.columnCount = columnCount;
+		this.rowCount = rowCount;
+		this.tileWidth = tileWidth;
+		this.tileHeight = tileHeight;
+
+		this.setName('Field');
+		this.setContentSize(
+			cc.size(
+				this.columnCount * this.tileWidth,
+				this.rowCount * this.tileHeight
+			)
+		);
+		this.drawRect(
+			cc.p(0,0),
+			cc.p(this.width,this.height),
+			cc.color(255,0,0,0),
+			3,
+			cc.color(0,255,0,255)
+		);
+
+		this.addBackGround();
+	},
+
+	addBackGround: function () {
+		const background = new ccui.Scale9Sprite(
+			resources.Field_png
+		);
+
+		const backgroundSize = background.getContentSize();
+		background.setCapInsets(
+			cc.rect(
+				backgroundSize.width / 2 - 1,
+				backgroundSize.height / 2 - 1,
+				2,
+				2
+			)
+		);
+		background.setContentSize(cc.size(
+			this.width + backgroundSize.width / 2,
+			this.height + backgroundSize.height / 2));
+		background.setPosition(this.width / 2, this.height / 2)
+
+		this.addChild(background, -1);
+	}
+})
+
+/* import { Tile } from './tile.js';
 import { Position } from './position.js';
 import { Canvas } from './canvas.js';
 
@@ -132,4 +181,4 @@ export class Field {
         this.canvas.move(this.cells, () => this.canvas.fill())
     }
 
-}
+} */

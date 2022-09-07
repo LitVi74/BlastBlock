@@ -9,10 +9,12 @@
     "renderMode" : 0,
     "engineDir":"frameworks/cocos2d-html5",
 
-    "modules" : ["cocos2d"],
+    "modules" : ["cocos2d", "ccui"],
 
     "jsList" : [
         "src/Resource.js",
-        "src/App.js"
+        "src/DefaultSettings.js",
+        "src/App.js",
+        "src/Field.js"
     ]
 }

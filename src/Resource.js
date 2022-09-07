@@ -1,1 +1,3 @@
-const resources = {};
+const resources = {
+	Field_png: 'res/field.png',
+};
