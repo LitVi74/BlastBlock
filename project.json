@@ -15,6 +15,7 @@
         "src/Resource.js",
         "src/DefaultSettings.js",
         "src/App.js",
-        "src/Field.js"
+        "src/Field.js",
+        "src/Tile.js"
     ]
 }

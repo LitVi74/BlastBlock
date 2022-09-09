@@ -1,4 +1,4 @@
-const Field = cc.DrawNode.extend({
+const Field = cc.Node.extend({
 	ctor: function (columnCount, rowCount, tileWidth, tileHeight) {
 		this._super();
 		this.columnCount = columnCount;
@@ -13,15 +13,16 @@ const Field = cc.DrawNode.extend({
 				this.rowCount * this.tileHeight
 			)
 		);
-		this.drawRect(
-			cc.p(0,0),
-			cc.p(this.width,this.height),
-			cc.color(255,0,0,0),
-			3,
-			cc.color(0,255,0,255)
-		);
+
+		this.addMask();
 
 		this.addBackGround();
+
+		const tile = new Tile(tileWidth, tileHeight);
+		tile.setAnchorPoint(cc.p(0, 0));
+		tile.setPosition(cc.p( 0, 0));
+
+		this.mask.addChild(tile, 0);
 	},
 
 	addBackGround: function () {
@@ -41,9 +42,24 @@ const Field = cc.DrawNode.extend({
 		background.setContentSize(cc.size(
 			this.width + backgroundSize.width / 2,
 			this.height + backgroundSize.height / 2));
-		background.setPosition(this.width / 2, this.height / 2)
+		background.setPosition(this.width / 2, this.height / 2);
 
 		this.addChild(background, -1);
+	},
+
+	addMask: function () {
+		const stencil = cc.DrawNode.create();
+		stencil.drawRect(
+			cc.p(0, 0),
+			cc.p(this.width, this.height),
+			cc.color(255, 0, 0, 255),
+			0,
+			cc.color(0, 0, 0, 0)
+		);
+
+		this.mask = cc.ClippingNode.create(stencil);
+
+		this.addChild(this.mask, 0);
 	}
 })
 
@@ -90,11 +106,6 @@ export class Field {
                 callback(new Position(x, y));
             }
         }
-    }
-
-    getRandomColor(){
-        let index = Math.floor( Math.random() * this.colors.length );
-        return this.colors[index];
     }
 
     onClick(position) {

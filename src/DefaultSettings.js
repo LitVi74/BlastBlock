@@ -4,7 +4,7 @@ const defaultSetting = {
     tile: {
         width: 56,
         height: 63,
+        colors: ['Red', 'Green', 'Blue', 'Purple', "Yellow"],
     },
-    colors: ['red', 'green', 'blue'],
     minGroupSize: 2,
 };
