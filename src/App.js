@@ -4,11 +4,12 @@ const Game = cc.Scene.extend({
 
 		const size = cc.winSize;
 
-		this.field = new Field(
+		this.field = new FieldView(
 			defaultSetting.columnCount,
 			defaultSetting.rowCount,
 			defaultSetting.tile.width,
-			defaultSetting.tile.height
+			defaultSetting.tile.height,
+			defaultSetting.tile.colors
 		);
 		this.field.setAnchorPoint(cc.p(0, 0))
 		this.field.setPosition(cc.p(size.width / 2, size.height / 5))

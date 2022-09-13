@@ -16,6 +16,8 @@
         "src/DefaultSettings.js",
         "src/App.js",
         "src/Field.js",
-        "src/Tile.js"
+        "src/FieldView.js",
+        "src/Tile.js",
+        "src/TileView.js"
     ]
 }
