@@ -19,6 +19,21 @@ const FieldView = cc.Node.extend({
 		this.addMask();
 		this.addTiles();
 		this.addBackGround();
+
+		cc.eventManager.addListener({
+			event: cc.EventListener.MOUSE,
+			swallowTouches: false,
+			onMouseDown: function (event) {
+				const target = event.getCurrentTarget();
+				const locationInNode = target.convertToNodeSpace(event.getLocation());
+				const targetSize = target.getContentSize();
+				const rect = cc.rect(0, 0, targetSize.width, targetSize.height);
+				if (cc.rectContainsPoint(rect, locationInNode)) {
+					const tilePosition = target.grtTilePosition(locationInNode);
+					target.field.handleClickField(tilePosition);
+				}
+			}
+		}, this)
 	},
 
 	addBackGround: function () {
@@ -68,6 +83,13 @@ const FieldView = cc.Node.extend({
 
 			this.mask.addChild(tile);
 		}
+	},
+
+	grtTilePosition: function (location) {
+		const tilePositionX = Math.floor(location.x / this.tileWidth);
+		const tilePositionY = Math.floor( location.y / this.tileHeight);
+
+		return cc.p(tilePositionX, tilePositionY);
 	}
 })
 
@@ -93,49 +115,6 @@ export class Field {
 
         this.canvas = new Canvas(config.canvas); 
         this.canvas.subscribe('click', data => this.onClick(data) );
-    }
-
-    onClick(position) {
-        let neightbors = this.getNeightdors(position);
-        
-        if(neightbors.length >= this.minGroup){
-            this.canvas.burn(neightbors, () =>{
-                neightbors.forEach(posit => {
-                    this.cells[posit.x][posit.y].color = 'black';
-                })
-                this.move();
-            });
-        }
-    }
-
-    getNeightdors(position) {
-        let tile = this.cells[position.x][position.y];
-        if (!tile) return;
-
-        let color = tile.color;
-        let neightbors = [];
-
-        let check = (position) => {
-            if( position.x < 0 || position.y < 0 || position.x > this.width - 1 || position.y > this.height - 1 )
-                return;
-
-            let selectTite = this.cells[position.x][position.y];
-
-            if ( !selectTite || selectTite.checked || selectTite.color !== color ) 
-                return;
-
-            neightbors.push(position);
-            selectTite.checked = true;
-
-            check(new Position(position.x - 1, position.y));
-            check(new Position(position.x + 1, position.y));
-            check(new Position(position.x, position.y - 1));
-            check(new Position(position.x, position.y + 1))
-        }
-
-        check(position);
-
-        return neightbors;
     }
 
     move() {
