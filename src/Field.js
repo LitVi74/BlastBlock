@@ -25,8 +25,8 @@ Field.prototype.handleClickField = function (tilePosition) {
 
 	if (this._burningTiles.size >= this.minGroupSize) {
 		this.burnTiles();
-		const stopCoordinates = this.ascentTiles();
-		this.dropTiles(stopCoordinates);
+		const columnNumbers = this.ascentTiles();
+		this.dropTiles(columnNumbers);
 	}
 
 	this._burningTiles.clear();
@@ -76,20 +76,15 @@ Field.prototype.burnTiles = function () {
 
 /*
 	Поднимает сгоревшие плитки за пределы поля
-	Возврашает координаты до которых должны упать плитки
+	Возврашает номера колонок, в которых сгорели плитки
  */
 Field.prototype.ascentTiles = function () {
 	const row = this.row;
-	const stopCoordinates = new Set();
+	const columnNumbers = new Set();
 
 	this._burningTiles.forEach(function (tile, tileKey, set) {
-		const stopCoordinate = Array.from(stopCoordinates).find(function (coordinates) {
-			return coordinates.x === tile.x;
-		});
-
-		if (!stopCoordinate || stopCoordinate.y > tile.y) {
-			stopCoordinates.delete(stopCoordinate);
-			stopCoordinates.add(cc.p(tile.x, tile.y));
+		if (!columnNumbers.has(tile.x)) {
+			columnNumbers.add(tile.x);
 		}
 
 		const columnOfTileCount = Array.from(set).filter(function (elem) {
@@ -103,15 +98,15 @@ Field.prototype.ascentTiles = function () {
 
 	this._burningTiles.clear();
 
-	return stopCoordinates;
+	return columnNumbers;
 };
 
-Field.prototype.dropTiles = function (stopCoordinates) {
+Field.prototype.dropTiles = function (columnNumbers) {
 	const tiles = this.tiles;
 
-	stopCoordinates.forEach(function (coordinate) {
+	columnNumbers.forEach(function (numbers) {
 		const columnOfTile = tiles.filter(function (tile) {
-			return tile.x === coordinate.x;
+			return tile.x === numbers;
 		}).sort(function (tileA, tileB) {
 			if (tileA.y < tileB.y) return -1;
 		});

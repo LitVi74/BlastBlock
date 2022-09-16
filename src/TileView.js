@@ -2,7 +2,6 @@ const TileView = cc.Node.extend({
 	ctor: function (tile, width, height) {
 		this._super();
 		this.tile = tile;
-		this.tileColor = tile.getTileColor();
 
 		this.tile.burnTileAnimation = this.burnTileAnimation.bind(this);
 		this.tile.ascentAndViewTile = this.ascentAndViewTile.bind(this);
@@ -19,7 +18,8 @@ const TileView = cc.Node.extend({
 	},
 
 	addSprite: function () {
-		const sprite = cc.Sprite.create(resources[this.tileColor + '_tile']);
+		const tileColor = this.tile.getTileColor();
+		const sprite = cc.Sprite.create(resources[tileColor + '_tile']);
 		sprite.setVertexRect(cc.rect(0, 0, this.width, this.height));
 		sprite.setPosition(cc.p(this.width / 2, this.height / 2));
 		sprite.setContentSize(this.width, this.height);
@@ -32,14 +32,12 @@ const TileView = cc.Node.extend({
 
 		sprites.forEach(function (sprite) {
 			sprite.runAction(new cc.Sequence(
-				new cc.ScaleTo(1, 0),
 				new cc.RemoveSelf(false),
 			));
 		});
 	},
 
 	ascentAndViewTile: function () {
-		this.tileColor = this.tile.getTileColor();
 		this.setPositionByCoordinates();
 		this.addSprite();
 	},
