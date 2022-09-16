@@ -2,6 +2,8 @@ const Tile = function (x, y) {
 	this.x = x;
 	this.y = y;
 	this._color = undefined;
+
+	this.burnTileAnimation = function () {};
 }
 
 Tile.prototype.createTileColor = function (tileColors) {

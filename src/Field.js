@@ -1,4 +1,6 @@
-const Field = function (row, column, tileColors) {
+const Field = function (row, column, tileColors, minGroupSize) {
+	this.tileColors = tileColors;
+	this.minGroupSize = minGroupSize;
 	this.tiles = [];
 	this._burningTiles = new Set();
 
@@ -19,6 +21,11 @@ Field.prototype.handleClickField = function (tilePosition) {
 	});
 
 	this.selectBurningTiles(pressedTile);
+
+	if (this._burningTiles.size >= this.minGroupSize)
+		this.burnTiles();
+
+	this._burningTiles.clear();
 };
 
 Field.prototype.selectBurningTiles = function (startTile) {
@@ -52,4 +59,10 @@ Field.prototype.selectBurningTiles = function (startTile) {
 	};
 
 	checkNeighbors(startTile);
+};
+
+Field.prototype.burnTiles = function () {
+	this._burningTiles.forEach(function (tile) {
+		tile.burnTileAnimation();
+	})
 }

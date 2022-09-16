@@ -4,11 +4,12 @@ const TileView = cc.Node.extend({
 		this.tile = tile;
 		this.tileColor = tile.getTileColor();
 
+		this.tile.burnTileAnimation = this.burnTileAnimation.bind(this);
+
 		this.setContentSize(cc.size(width, height));
 	},
 
 	setPositionByCoordinates: function () {
-		this.setAnchorPoint(cc.p(0, 0));
 		this.setPosition(cc.p(
 			this.width * this.tile.x,
 			this.height * this.tile.y
@@ -23,4 +24,15 @@ const TileView = cc.Node.extend({
 
 		this.addChild(sprite, -1);
 	},
+
+	burnTileAnimation: function () {
+		const sprites = this.getChildren()
+
+		sprites.forEach(function (sprite) {
+			sprite.runAction(new cc.Sequence(
+				new cc.ScaleTo(0.5, 0),
+				new cc.RemoveSelf(),
+			));
+		});
+	}
 })
