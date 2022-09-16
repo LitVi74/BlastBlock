@@ -1,12 +1,13 @@
 const Field = function (row, column, tileColors, minGroupSize) {
+	this.row = row;
 	this.tileColors = tileColors;
 	this.minGroupSize = minGroupSize;
 	this.tiles = [];
 	this._burningTiles = new Set();
 
 	for(let index = 0; index < column * row; index ++) {
-		const coordinateX = index % row;
-		const coordinateY = Math.floor(index / column);
+		const coordinateX = index % column;
+		const coordinateY = Math.floor(index / row);
 
 		const tile = new Tile(coordinateX, coordinateY);
 		tile.createTileColor(tileColors);
@@ -22,8 +23,10 @@ Field.prototype.handleClickField = function (tilePosition) {
 
 	this.selectBurningTiles(pressedTile);
 
-	if (this._burningTiles.size >= this.minGroupSize)
+	if (this._burningTiles.size >= this.minGroupSize) {
 		this.burnTiles();
+		this.ascentTiles();
+	}
 
 	this._burningTiles.clear();
 };
@@ -62,7 +65,42 @@ Field.prototype.selectBurningTiles = function (startTile) {
 };
 
 Field.prototype.burnTiles = function () {
+	const tileColors = this.tileColors
+
 	this._burningTiles.forEach(function (tile) {
 		tile.burnTileAnimation();
+		tile.createTileColor(tileColors);
 	})
-}
+};
+
+/*
+	Поднимает сгоревшие плитки за пределы поля
+	Возврашает координаты до которых должны упать плитки
+ */
+Field.prototype.ascentTiles = function () {
+	const row = this.row;
+	const stopCoordinates = new Set();
+
+	this._burningTiles.forEach(function (tile, tileKey, set) {
+		const stopCoordinate = Array.from(stopCoordinates).find(function (coordinates) {
+			return coordinates.x === tile.x;
+		});
+
+		if (!stopCoordinate || stopCoordinate.y > tile.y) {
+			stopCoordinates.delete(stopCoordinate);
+			stopCoordinates.add(cc.p(tile.x, tile.y));
+		}
+
+		const columnOfTileCount = Array.from(set).filter(function (elem) {
+			return elem.x === tile.x;
+		}).length;
+
+		tile.ascentTile(cc.p(tile.x, row + columnOfTileCount - 1));
+
+		set.delete(tile);
+	});
+
+	this._burningTiles.clear();
+
+	return stopCoordinates;
+};

@@ -34,5 +34,10 @@ const TileView = cc.Node.extend({
 				new cc.RemoveSelf(),
 			));
 		});
+	},
+
+	ascentAndViewTile: function () {
+		this.setPositionByCoordinates();
+		this.addSprite();
 	}
 })
