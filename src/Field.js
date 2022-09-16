@@ -25,7 +25,8 @@ Field.prototype.handleClickField = function (tilePosition) {
 
 	if (this._burningTiles.size >= this.minGroupSize) {
 		this.burnTiles();
-		this.ascentTiles();
+		const stopCoordinates = this.ascentTiles();
+		this.dropTiles(stopCoordinates);
 	}
 
 	this._burningTiles.clear();
@@ -104,3 +105,20 @@ Field.prototype.ascentTiles = function () {
 
 	return stopCoordinates;
 };
+
+Field.prototype.dropTiles = function (stopCoordinates) {
+	const tiles = this.tiles;
+
+	stopCoordinates.forEach(function (coordinate) {
+		const columnOfTile = tiles.filter(function (tile) {
+			return tile.x === coordinate.x;
+		}).sort(function (tileA, tileB) {
+			if (tileA.y < tileB.y) return -1;
+		});
+
+		columnOfTile.forEach(function (tile, index) {
+			if (tile.y > index)
+				tile.dropTile(tile.y - index);
+		})
+	})
+}

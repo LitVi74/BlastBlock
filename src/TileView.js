@@ -5,6 +5,8 @@ const TileView = cc.Node.extend({
 		this.tileColor = tile.getTileColor();
 
 		this.tile.burnTileAnimation = this.burnTileAnimation.bind(this);
+		this.tile.ascentAndViewTile = this.ascentAndViewTile.bind(this);
+		this.tile.dropTileAnimation =  this.dropTileAnimation.bind(this);
 
 		this.setContentSize(cc.size(width, height));
 	},
@@ -30,14 +32,27 @@ const TileView = cc.Node.extend({
 
 		sprites.forEach(function (sprite) {
 			sprite.runAction(new cc.Sequence(
-				new cc.ScaleTo(0.5, 0),
-				new cc.RemoveSelf(),
+				new cc.ScaleTo(1, 0),
+				new cc.RemoveSelf(false),
 			));
 		});
 	},
 
 	ascentAndViewTile: function () {
+		this.tileColor = this.tile.getTileColor();
 		this.setPositionByCoordinates();
 		this.addSprite();
+	},
+
+	dropTileAnimation: function (dropSize) {
+		const dropAnimation = new cc.MoveTo(
+			1,
+			cc.p(
+				this.width * this.tile.x,
+				this.height * (this.tile.y -	dropSize)
+			)
+		);
+
+		this.runAction(dropAnimation);
 	}
 })

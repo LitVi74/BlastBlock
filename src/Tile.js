@@ -4,7 +4,8 @@ const Tile = function (x, y) {
 	this._color = undefined;
 
 	this.burnTileAnimation = function () {};
-	this.ascentAndViewTile =  function () {};
+	this.ascentAndViewTile = function () {};
+	this.dropTileAnimation = function (dropSize) {};
 }
 
 Tile.prototype.createTileColor = function (tileColors) {
@@ -24,4 +25,9 @@ Tile.prototype.setNewCoordinates = function (coordinates) {
 Tile.prototype.ascentTile = function (coordinates) {
 	this.setNewCoordinates(coordinates);
 	this.ascentAndViewTile();
+}
+
+Tile.prototype.dropTile = function (dropSize) {
+	this.dropTileAnimation(dropSize);
+	this.setNewCoordinates(cc.p(this.x, this.y - dropSize));
 }
