@@ -1,7 +1,8 @@
-const Field = function (row, column, tileColors, minGroupSize) {
+const Field = function (row, column, tileColors, minGroupSize, minGroupSizeForBomb) {
 	this.row = row;
 	this.tileColors = tileColors;
 	this.minGroupSize = minGroupSize;
+	this.minGroupSizeForBomb = minGroupSizeForBomb;
 	this.tiles = [];
 	this._burningTiles = new Set();
 
@@ -21,9 +22,17 @@ Field.prototype.handleClickField = function (tilePosition) {
 		return tile.x === tilePosition.x && tile.y === tilePosition.y;
 	});
 
-	this.selectBurningTiles(pressedTile);
+	pressedTile.checkBomb() ? this.selectBurningTilesForBomb(pressedTile) : this.selectBurningTiles(pressedTile);
 
 	if (this._burningTiles.size >= this.minGroupSize) {
+		if (
+			this._burningTiles.size >= this.minGroupSizeForBomb &&
+			!pressedTile.checkBomb()
+		) {
+			pressedTile.setIsBomb(true);
+			this._burningTiles.delete(pressedTile);
+		}
+
 		this.burnTiles();
 		const columnNumbers = this.ascentTiles();
 		this.dropTiles(columnNumbers);
@@ -31,6 +40,21 @@ Field.prototype.handleClickField = function (tilePosition) {
 
 	this._burningTiles.clear();
 };
+
+Field.prototype.selectBurningTilesForBomb = function (startTile) {
+	for (let coordinateX = startTile.x - 1; coordinateX <= startTile.x + 1; coordinateX++) {
+		for (let coordinateY = startTile.y - 1; coordinateY <= startTile.y + 1; coordinateY ++) {
+			const currentTile = this.tiles.find(function (tile) {
+				return tile.x === coordinateX && tile.y === coordinateY;
+			});
+
+			if (!currentTile || this._burningTiles.has(currentTile)) continue;
+			this._burningTiles.add(currentTile);
+
+			if (currentTile.checkBomb()) this.selectBurningTilesForBomb(currentTile);
+		}
+	}
+}
 
 Field.prototype.selectBurningTiles = function (startTile) {
 	const burningTiles = this._burningTiles;
@@ -69,6 +93,7 @@ Field.prototype.burnTiles = function () {
 	const tileColors = this.tileColors
 
 	this._burningTiles.forEach(function (tile) {
+		tile.setIsBomb(false);
 		tile.burnTileAnimation();
 		tile.createTileColor(tileColors);
 	})

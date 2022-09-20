@@ -5,7 +5,8 @@ const FieldView = cc.Node.extend({
 		tileWidth,
 		tileHeight,
 		tileColors,
-		minGroupSize
+		minGroupSize,
+		minGroupSizeForBomb,
 	) {
 		this._super();
 		this.columnCount = columnCount;
@@ -15,7 +16,7 @@ const FieldView = cc.Node.extend({
 		this.tileColors = tileColors;
 		this.minGroupSize = minGroupSize;
 
-		this.field = new Field(rowCount, columnCount, tileColors, minGroupSize);
+		this.field = new Field(rowCount, columnCount, tileColors, minGroupSize, minGroupSizeForBomb);
 
 		this.setContentSize(
 			cc.size(

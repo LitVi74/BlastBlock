@@ -10,7 +10,8 @@ const Game = cc.Scene.extend({
 			defaultSetting.tile.width,
 			defaultSetting.tile.height,
 			defaultSetting.tile.colors,
-			defaultSetting.minGroupSize
+			defaultSetting.minGroupSize,
+			defaultSetting.minGroupSizeForBomb,
 		);
 		this.field.setAnchorPoint(cc.p(0, 0))
 		this.field.setPosition(cc.p(size.width / 2, size.height / 5))

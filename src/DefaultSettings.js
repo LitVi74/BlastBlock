@@ -7,4 +7,5 @@ const defaultSetting = {
         colors: ['Red', 'Green', 'Blue', 'Purple', "Yellow"],
     },
     minGroupSize: 2,
+    minGroupSizeForBomb: 6,
 };

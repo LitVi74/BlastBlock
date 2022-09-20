@@ -2,6 +2,7 @@ const Tile = function (x, y) {
 	this.x = x;
 	this.y = y;
 	this._color = undefined;
+	this.isBomb = false;
 
 	this.burnTileAnimation = function () {};
 	this.ascentAndViewTile = function () {};
@@ -30,4 +31,14 @@ Tile.prototype.ascentTile = function (coordinates) {
 Tile.prototype.dropTile = function (dropSize) {
 	this.dropTileAnimation(dropSize);
 	this.setNewCoordinates(cc.p(this.x, this.y - dropSize));
+}
+
+Tile.prototype.setIsBomb = function (isBombFlag) {
+	if (typeof isBombFlag !== 'boolean') throw new Error('type isBomb should be boolean');
+
+	this.isBomb = isBombFlag;
+}
+
+Tile.prototype.checkBomb = function () {
+	return this.isBomb;
 }
