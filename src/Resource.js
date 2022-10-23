@@ -4,5 +4,6 @@ const resources = {
 	Green_tile: 'res/green.png',
 	Purple_tile: 'res/purple.png',
 	Red_tile: 'res/red.png',
-	Yellow_tile: 'res/yellow.png'
+	Yellow_tile: 'res/yellow.png',
+	Star_png: 'res/star.png'
 };

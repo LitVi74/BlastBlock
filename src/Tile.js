@@ -6,6 +6,7 @@ const Tile = function (x, y) {
 
 	this.burnTileAnimation = function () {};
 	this.ascentAndViewTile = function () {};
+	this.setIsBombView = function () {}
 	this.dropTileAnimation = function (dropSize) {};
 }
 
@@ -37,6 +38,8 @@ Tile.prototype.setIsBomb = function (isBombFlag) {
 	if (typeof isBombFlag !== 'boolean') throw new Error('type isBomb should be boolean');
 
 	this.isBomb = isBombFlag;
+	if (isBombFlag) this.setIsBombView()
+
 }
 
 Tile.prototype.checkBomb = function () {

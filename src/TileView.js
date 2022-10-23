@@ -6,6 +6,7 @@ const TileView = cc.Node.extend({
 		this.tile.burnTileAnimation = this.burnTileAnimation.bind(this);
 		this.tile.ascentAndViewTile = this.ascentAndViewTile.bind(this);
 		this.tile.dropTileAnimation =  this.dropTileAnimation.bind(this);
+		this.tile.setIsBombView = this.setIsBombView.bind(this);
 
 		this.setContentSize(cc.size(width, height));
 	},
@@ -52,5 +53,16 @@ const TileView = cc.Node.extend({
 		);
 
 		this.runAction(dropAnimation);
-	}
+	},
+
+	setIsBombView: function () {
+		const sprite = cc.Sprite.create(resources["Star_png"]);
+		sprite.setPosition(cc.p(this.width / 2, this.height / 2 - 2.5));
+		sprite.setVertexRect(
+			cc.rect(0, 0, this.width * 0.65, this.height * 0.54)
+		);
+		sprite.setContentSize(this.width * 0.65, this.height * 0.54);
+
+		this.addChild(sprite);
+	},
 })
