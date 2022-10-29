@@ -43,12 +43,12 @@ const TileView = cc.Node.extend({
 		this.addSprite();
 	},
 
-	dropTileAnimation: function (dropSize) {
+	dropTileAnimation: function () {
 		const dropAnimation = new cc.MoveTo(
-			1,
+			defaultSetting.animationTime.drop,
 			cc.p(
 				this.width * this.tile.x,
-				this.height * (this.tile.y -	dropSize)
+				this.height * this.tile.y
 			)
 		);
 
@@ -57,11 +57,12 @@ const TileView = cc.Node.extend({
 
 	setIsBombView: function () {
 		const sprite = cc.Sprite.create(resources["Star_png"]);
-		sprite.setPosition(cc.p(this.width / 2, this.height / 2 - 2.5));
+		sprite.setPosition(cc.p(this.width / 2, this.height * 0.455));
 		sprite.setVertexRect(
-			cc.rect(0, 0, this.width * 0.65, this.height * 0.54)
+			cc.rect(0, 0, this.width * 0.65, this.height * 0.535)
 		);
-		sprite.setContentSize(this.width * 0.65, this.height * 0.54);
+		sprite.setContentSize(this.width * 0.65, this.height * 0.535);
+		sprite.setOpacity(100)
 
 		this.addChild(sprite);
 	},

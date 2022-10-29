@@ -30,8 +30,8 @@ Tile.prototype.ascentTile = function (coordinates) {
 }
 
 Tile.prototype.dropTile = function (dropSize) {
-	this.dropTileAnimation(dropSize);
 	this.setNewCoordinates(cc.p(this.x, this.y - dropSize));
+	this.dropTileAnimation();
 }
 
 Tile.prototype.setIsBomb = function (isBombFlag) {

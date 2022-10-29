@@ -8,4 +8,7 @@ const defaultSetting = {
     },
     minGroupSize: 2,
     minGroupSizeForBomb: 6,
+    animationTime: {
+        drop: 1
+    }
 };

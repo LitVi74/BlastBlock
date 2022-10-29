@@ -9,6 +9,7 @@ const FieldView = cc.Node.extend({
 		minGroupSizeForBomb,
 	) {
 		this._super();
+		this.fieldBusy = false;
 		this.columnCount = columnCount;
 		this.rowCount = rowCount;
 		this.tileWidth = tileWidth;
@@ -37,9 +38,15 @@ const FieldView = cc.Node.extend({
 				const locationInNode = target.convertToNodeSpace(event.getLocation());
 				const targetSize = target.getContentSize();
 				const rect = cc.rect(0, 0, targetSize.width, targetSize.height);
-				if (cc.rectContainsPoint(rect, locationInNode)) {
+				if (cc.rectContainsPoint(rect, locationInNode) && !target.fieldBusy) {
+					target.fieldBusy = true;
+
 					const tilePosition = target.grtTilePosition(locationInNode);
 					target.field.handleClickField(tilePosition);
+
+					cc.director.getScheduler().scheduleCallbackForTarget(target, function() {
+						target.fieldBusy = false;
+					}, defaultSetting.animationTime.drop, 0, 0, false)
 				}
 			}
 		}, this)
