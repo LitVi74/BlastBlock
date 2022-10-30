@@ -1,5 +1,6 @@
 const Field = function (row, column, tileColors, minGroupSize, minGroupSizeForBomb) {
 	this.row = row;
+	this.column = column;
 	this.tileColors = tileColors;
 	this.minGroupSize = minGroupSize;
 	this.minGroupSizeForBomb = minGroupSizeForBomb;

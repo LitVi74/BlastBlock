@@ -1,28 +1,20 @@
 const FieldView = cc.Node.extend({
 	ctor: function (
-		columnCount,
-		rowCount,
 		tileWidth,
 		tileHeight,
-		tileColors,
-		minGroupSize,
-		minGroupSizeForBomb,
+		filed
 	) {
 		this._super();
 		this.fieldBusy = false;
-		this.columnCount = columnCount;
-		this.rowCount = rowCount;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		this.tileColors = tileColors;
-		this.minGroupSize = minGroupSize;
 
-		this.field = new Field(rowCount, columnCount, tileColors, minGroupSize, minGroupSizeForBomb);
+		this.field = filed;
 
 		this.setContentSize(
 			cc.size(
-				this.columnCount * this.tileWidth,
-				this.rowCount * this.tileHeight
+				this.field.column * this.tileWidth,
+				this.field.row * this.tileHeight
 			)
 		);
 
