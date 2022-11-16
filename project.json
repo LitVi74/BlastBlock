@@ -18,6 +18,9 @@
         "src/Field.js",
         "src/FieldView.js",
         "src/Tile.js",
-        "src/TileView.js"
+        "src/TileView.js",
+        "src/Counter.js",
+        "src/CounterView.js",
+        "src/ProgressBar.js"
     ]
 }

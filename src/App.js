@@ -1,9 +1,12 @@
 const Game = cc.Scene.extend({
 	ctor: function () {
 		this._super();
+		this.field = undefined;
+		this.counter = undefined;
 
 		this.addBackGround();
 		this.addField();
+		this.addCounter();
 	},
 
 	addBackGround: function () {
@@ -24,14 +27,19 @@ const Game = cc.Scene.extend({
 		tileWidth = defaultSetting.tile.width,
 		tileHeight = defaultSetting.tile.height,
 	) {
-		const size = cc.winSize;
-
 		this.field = new Field(rowCount, columnCount, tileColors, minGroupSize, minGroupSizeForBomb);
 
+		const size = cc.winSize;
 		const fieldView = new FieldView(tileWidth, tileHeight, this.field);
 		fieldView.setAnchorPoint(cc.p(0, 0));
 		fieldView.setPosition(cc.p(size.width / 2, size.height / 5));
 
 		this.addChild(fieldView, 0);
-	}
-})
+	},
+
+	addCounter: function () {
+			const counterView = new CounterView();
+
+			this.addChild(counterView);
+	},
+});

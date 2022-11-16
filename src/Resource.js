@@ -5,5 +5,8 @@ const resources = {
 	Purple_tile: 'res/purple.png',
 	Red_tile: 'res/red.png',
 	Yellow_tile: 'res/yellow.png',
-	Star_png: 'res/star.png'
+	Star_png: 'res/star.png',
+	Progress_png: 'res/progress.png',
+	Progress_BG_png: 'res/progress_bg.png',
+	Progress_Bar_BG_png: 'res/progress_bar_bg.png'
 };
