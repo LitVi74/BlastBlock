@@ -77,5 +77,9 @@ const ProgressBar = cc.Node.extend({
 	},
 
 	addProgressText: function () {
+		const label = new cc.LabelTTF('Прогресс', 'Marvin');
+		label.setPosition(cc.p(0, this.height))
+
+		this.addChild(label);
 	}
 });
