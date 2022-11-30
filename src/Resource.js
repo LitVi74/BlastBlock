@@ -9,5 +9,7 @@ const resources = {
 	Progress_png: 'res/progress.png',
 	Progress_BG_png: 'res/progress_bg.png',
 	Progress_Bar_BG_png: 'res/progress_bar_bg.png',
+	Counter_BG_png: 'res/counter_bg.png',
+	Ball_png: 'res/ball.png',
 	Marvin_ttf: 'res/marvin.ttf'
 };

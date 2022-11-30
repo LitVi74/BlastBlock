@@ -9,11 +9,14 @@ const Counter = function (
 	this.experienceUnit = experienceUnit;
 
 	this.setNewProgressValue = function () {};
+	this.updateSteps = function () {};
 }
 
 Counter.prototype.addExperience = function (burnedTilesCount) {
+	this.steps = this.steps - 1;
 	this.experience = this.experience + this.experienceUnit * burnedTilesCount;
 
 	const progressValue = Math.min(this.experience / this.necessaryExperience * 100, 100);
 	this.setNewProgressValue(progressValue);
+	this.updateSteps();
 }
