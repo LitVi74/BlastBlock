@@ -1,4 +1,10 @@
-const Field = function (row, column, tileColors, minGroupSize, minGroupSizeForBomb) {
+const Field = function (
+	row,
+	column,
+	tileColors,
+	minGroupSize,
+	minGroupSizeForBomb)
+{
 	this.row = row;
 	this.column = column;
 	this.tileColors = tileColors;
@@ -6,6 +12,8 @@ const Field = function (row, column, tileColors, minGroupSize, minGroupSizeForBo
 	this.minGroupSizeForBomb = minGroupSizeForBomb;
 	this.tiles = [];
 	this._burningTiles = new Set();
+
+	this.addExperience = function (burnedTilesCount) {};
 
 	for(let index = 0; index < column * row; index ++) {
 		const coordinateX = index % column;
@@ -33,6 +41,8 @@ Field.prototype.handleClickField = function (tilePosition) {
 			pressedTile.setIsBomb(true);
 			this._burningTiles.delete(pressedTile);
 		}
+
+		this.addExperience(this._burningTiles.size)
 
 		this.burnTiles();
 		const columnNumbers = this.ascentTiles();

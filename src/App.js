@@ -38,8 +38,14 @@ const Game = cc.Scene.extend({
 	},
 
 	addCounter: function () {
-			const counterView = new CounterView();
+		const maxSteps = 10
+		const necessaryExperience = 300;
+		const	experienceUnit = 10;
+		this.counter = new Counter(maxSteps, necessaryExperience, experienceUnit);
+		const counterView = new CounterView(this.counter);
 
-			this.addChild(counterView);
+		this.field.addExperience = this.counter.addExperience.bind(this.counter);
+
+		this.addChild(counterView);
 	},
 });

@@ -9,6 +9,8 @@ const ProgressBar = cc.Node.extend({
 			size.height * 0.05,
 		))
 
+		this.maxProgressWidth = this.width * 0.9;
+
 		this.setAnchorPoint(cc.p(0, 0.5));
 		this.setPosition(size.width / 2, size.height - this.height);
 
@@ -63,11 +65,11 @@ const ProgressBar = cc.Node.extend({
 				2));
 
 		progressBackground.setContentSize(cc.size(
-			this.width * 0.9 + backgroundSize.width / 2,
+			this.maxProgressWidth + backgroundSize.width / 2,
 			backgroundSize.height));
 
 		progressBackground.setAnchorPoint(cc.p(0.5, 0));
-		this.progress.setAnchorPoint(cc.p(0,0.5));
+		this.progress.setAnchorPoint(cc.p(0,0.475));
 		this.progress.setPosition(cc.p(
 			0,
 			progressBackground.height / 2));
@@ -78,8 +80,16 @@ const ProgressBar = cc.Node.extend({
 
 	addProgressText: function () {
 		const label = new cc.LabelTTF('Прогресс', 'Marvin');
-		label.setPosition(cc.p(0, this.height))
+		label.setPosition(cc.p(0, this.height));
 
 		this.addChild(label);
-	}
+	},
+
+	setProgress: function (newProgressValue) {
+		const progressSize = this.progress.getCapInsets();
+		this.progress.setContentSize(cc.size(
+			this.maxProgressWidth * newProgressValue / 100 + progressSize.x + progressSize.width,
+			progressSize.y * 2 + progressSize.height
+		));
+	},
 });

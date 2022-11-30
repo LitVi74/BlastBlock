@@ -4,10 +4,16 @@ const CounterView = cc.Node.extend({
 		this.counter = counter;
 		this.progressBar = new ProgressBar();
 
-		this.addProgressBar()
+		counter.setNewProgressValue = this.setNewProgressBarValue.bind(this);
+
+		this.addProgressBar();
 	},
 
 	addProgressBar: function () {
 		this.addChild(this.progressBar);
 	},
+
+	setNewProgressBarValue: function (newProgressValue) {
+		this.progressBar.setProgress(newProgressValue);
+	}
 })
