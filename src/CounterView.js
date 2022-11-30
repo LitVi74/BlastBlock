@@ -10,6 +10,7 @@ const CounterView = cc.Node.extend({
 
 		counter.setNewProgressValue = this.setNewProgressBarValue.bind(this);
 		counter.updateSteps = this.updateStepsCounter.bind(this);
+		counter.updateExperience = this.updateExperienceCounter.bind(this);
 
 		this.addBackGround();
 		this.addProgressBar();
@@ -29,12 +30,13 @@ const CounterView = cc.Node.extend({
 		background.setContentSize(cc.size(
 			Math.max(this.width / 5, 400) + backgroundSize.width / 2,
 			this.height / 1.8 + backgroundSize.height / 2
-		))
+		));
 
 		background.setAnchorPoint(0.5, 0.5);
 		background.setPosition(this.width / 4.5, this.height / 2);
 
-		this.addStepsCounter(background)
+		this.addStepsCounter(background);
+		this.addExperienceCounter(background);
 
 		this.addChild(background,0);
 	},
@@ -54,8 +56,50 @@ const CounterView = cc.Node.extend({
 			ball.height / 2
 		));
 
-		ball.addChild(this.steps)
-		Node.addChild(ball)
+		ball.addChild(this.steps);
+		Node.addChild(ball);
+	},
+
+	addExperienceCounter: function (Node) {
+		const experienceBackground = new ccui.Scale9Sprite(
+			resources.Experience_png);
+
+		const experienceBackgroundSize = experienceBackground.getContentSize();
+		experienceBackground.setCapInsets(cc.rect(
+			experienceBackgroundSize.width / 2 - 1,
+			experienceBackgroundSize.height / 2 - 1,
+			2,
+			2
+		));
+		experienceBackground.setContentSize(cc.size(
+			Node.width * 0.6 + experienceBackgroundSize.width / 2,
+			Node.height / 4 + experienceBackgroundSize.height / 2
+		))
+
+		experienceBackground.setAnchorPoint(0.5, 1);
+		experienceBackground.setPosition( cc.p(
+			Node.width / 2,
+			Node.height / 2
+		));
+
+		const experienceText = new cc.LabelTTF('Опыт', 'Marvin');
+		experienceText.fontSize = 32;
+		experienceText.setAnchorPoint(0.5, 0.5)
+		experienceText.setPosition(cc.p(
+			experienceBackground.width / 2,
+			experienceBackground.height * 0.7
+		))
+
+		this.experience = new cc.LabelTTF(String(this.counter.experience), 'Marvin');
+		this.experience.fontSize = 24;
+		this.experience.setPosition(cc.p(
+			experienceBackground.width / 2,
+			experienceBackground.height * 0.4
+		));
+
+		experienceBackground.addChild(experienceText);
+		experienceBackground.addChild(this.experience);
+		Node.addChild(experienceBackground);
 	},
 
 	addProgressBar: function () {
@@ -64,6 +108,10 @@ const CounterView = cc.Node.extend({
 
 	updateStepsCounter: function () {
 		this.steps.setString(this.counter.steps);
+	},
+
+	updateExperienceCounter: function () {
+		this.experience.setString(this.counter.experience);
 	},
 
 	setNewProgressBarValue: function (newProgressValue) {

@@ -11,5 +11,6 @@ const resources = {
 	Progress_Bar_BG_png: 'res/progress_bar_bg.png',
 	Counter_BG_png: 'res/counter_bg.png',
 	Ball_png: 'res/ball.png',
+	Experience_png: 'res/experience.png',
 	Marvin_ttf: 'res/marvin.ttf'
 };
